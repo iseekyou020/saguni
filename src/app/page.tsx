@@ -1,11 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { templates, PromptTemplate } from "@/data/templates";
 
 const categories = [
   { id: "all", name: "全部", emoji: "📚" },
+  { id: "collected", name: "我的收藏", emoji: "⭐" },
   { id: "代码理解", name: "代码理解", emoji: "🔍" },
   { id: "Bug 修复", name: "Bug 修复", emoji: "🐛" },
   { id: "代码重构", name: "代码重构", emoji: "♻️" },
@@ -33,10 +34,49 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [collectedIds, setCollectedIds] = useState<string[]>([]);
 
+  // 加载收藏状态
+  useEffect(() => {
+    const saved = localStorage.getItem("saguni_collected");
+    if (saved) {
+      try {
+        setCollectedIds(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse collected templates:", e);
+      }
+    }
+  }, []);
+
+  // 保存收藏状态
+  const toggleCollect = (templateId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    let newIds;
+    if (collectedIds.includes(templateId)) {
+      newIds = collectedIds.filter((id) => id !== templateId);
+    } else {
+      newIds = [...collectedIds, templateId];
+    }
+    setCollectedIds(newIds);
+    localStorage.setItem("saguni_collected", JSON.stringify(newIds));
+  };
+
+  // 筛选模板
   const filteredTemplates = templates.filter((template) => {
+    // 收藏分类
+    if (selectedCategory === "collected") {
+      const matchesSearch =
+        searchQuery === "" ||
+        template.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        template.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        template.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+      return matchesSearch && collectedIds.includes(template.id);
+    }
+    
+    // 普通分类
     const matchesCategory = selectedCategory === "all" || template.category === selectedCategory;
     const matchesSearch =
+      searchQuery === "" ||
       template.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       template.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       template.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -55,7 +95,6 @@ export default function Home() {
       <header className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-sm">
         <div className="max-w-6xl mx-auto px-4 py-6">
           <div className="flex items-center gap-4">
-            {/* 卡皮巴拉图标 */}
             <div className="w-16 h-16 flex-shrink-0">
               <Image
                 src="/kapibala.svg"
@@ -65,14 +104,12 @@ export default function Home() {
                 className="w-full h-full"
               />
             </div>
-            
-            {/* 标题和副标题 */}
             <div>
               <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">
-                🦫 Kapibala
+                🦫 Saguni
               </h1>
               <p className="text-gray-600 dark:text-gray-400 mt-1">
-                卡皮巴拉的 AI Prompt 模板库 🦦 让 AI 帮你写更好的代码
+                让 AI 帮你写更好的代码 ✨
               </p>
             </div>
           </div>
@@ -89,14 +126,13 @@ export default function Home() {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full px-6 py-4 rounded-full border-2 border-orange-200 dark:border-orange-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-4 focus:ring-orange-200 dark:focus:ring-orange-800 transition-all shadow-lg"
           />
-          {/* 搜索图标装饰 */}
           <div className="absolute right-6 top-1/2 -translate-y-1/2 text-2xl">
             🦫
           </div>
         </div>
       </div>
 
-      {/* 分类 */}
+      {/* Categories */}
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex gap-2 overflow-x-auto pb-4">
           {categories.map((category) => (
@@ -111,20 +147,25 @@ export default function Home() {
             >
               <span className="mr-1">{category.emoji}</span>
               {category.name}
+              {category.id === "collected" && collectedIds.length > 0 && (
+                <span className="ml-1 bg-white/20 px-1.5 py-0.5 rounded-full text-xs">
+                  {collectedIds.length}
+                </span>
+              )}
             </button>
           ))}
         </div>
       </div>
 
-      {/* 模板网格 */}
+      {/* Templates Grid */}
       <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="flex items-center gap-2 mb-4">
           <span className="text-2xl">📦</span>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
-            模板列表
+            {selectedCategory === "collected" ? "我的收藏" : "模板列表"}
           </h2>
           <span className="text-sm text-gray-500 dark:text-gray-400">
-            ({filteredTemplates.length} 个模板)
+            ({filteredTemplates.length} 个)
           </span>
         </div>
         
@@ -150,11 +191,17 @@ export default function Home() {
                     {template.title}
                   </h3>
                 </div>
-                {template.isPremium && (
-                  <span className="text-xs bg-gradient-to-r from-yellow-400 to-orange-400 text-white px-2 py-0.5 rounded-full">
-                    ⭐ Premium
-                  </span>
-                )}
+                <button
+                  onClick={(e) => toggleCollect(template.id, e)}
+                  className={`text-xl transition-transform hover:scale-125 ${
+                    collectedIds.includes(template.id)
+                      ? "text-yellow-500"
+                      : "text-gray-300 hover:text-yellow-400"
+                  }`}
+                  title={collectedIds.includes(template.id) ? "取消收藏" : "收藏"}
+                >
+                  {collectedIds.includes(template.id) ? "⭐" : "☆"}
+                </button>
               </div>
               <p className="text-gray-600 dark:text-gray-400 text-sm mt-2 line-clamp-2">
                 {template.description}
@@ -178,18 +225,24 @@ export default function Home() {
 
         {filteredTemplates.length === 0 && (
           <div className="text-center py-16">
-            <div className="text-6xl mb-4">🔍</div>
+            <div className="text-6xl mb-4">
+              {selectedCategory === "collected" ? "⭐" : "🔍"}
+            </div>
             <p className="text-gray-500 dark:text-gray-400 text-lg">
-              没有找到匹配的模板
+              {selectedCategory === "collected" 
+                ? "还没有收藏任何模板" 
+                : "没有找到匹配的模板"}
             </p>
             <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">
-              试试其他关键词吧～
+              {selectedCategory === "collected"
+                ? "点击 ⭐ 收藏你喜欢的模板吧！"
+                : "试试其他关键词吧～"}
             </p>
           </div>
         )}
       </div>
 
-      {/* 模板详情弹窗 */}
+      {/* Template Detail Modal */}
       {selectedTemplate && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
           <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
@@ -224,18 +277,30 @@ export default function Home() {
                 </button>
               </div>
 
+              {/* Action Buttons */}
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={(e) => toggleCollect(selectedTemplate.id, e)}
+                  className={`flex items-center gap-1 px-4 py-2 rounded-lg transition-colors ${
+                    collectedIds.includes(selectedTemplate.id)
+                      ? "bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-300"
+                      : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-yellow-50"
+                  }`}
+                >
+                  {collectedIds.includes(selectedTemplate.id) ? "⭐ 已收藏" : "☆ 收藏"}
+                </button>
+                <button
+                  onClick={() => copyToClipboard(selectedTemplate.prompt, selectedTemplate.id)}
+                  className="flex-1 bg-gradient-to-r from-orange-400 to-amber-500 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  {copiedId === selectedTemplate.id ? "已复制！" : "📋 复制 Prompt"}
+                </button>
+              </div>
+
               <div className="mt-6">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                    Prompt 模板
-                  </span>
-                  <button
-                    onClick={() => copyToClipboard(selectedTemplate.prompt, selectedTemplate.id)}
-                    className="text-sm text-blue-500 hover:text-blue-600"
-                  >
-                    {copiedId === selectedTemplate.id ? "已复制！" : "复制"}
-                  </button>
-                </div>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 block">
+                  Prompt 模板
+                </span>
                 <pre className="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 overflow-x-auto text-sm text-gray-800 dark:text-gray-300">
                   {selectedTemplate.prompt}
                 </pre>
