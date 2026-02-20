@@ -1017,4 +1017,145 @@ API 端点：{endpoint}
     tags: ["配置", "开发环境", "工具"],
     isPremium: false,
   },
+  // 付费模板 - 企业级
+  {
+    id: "enterprise-arch",
+    title: "企业级系统架构设计",
+    description: "设计高可用、高性能的系统架构（付费）",
+    category: "架构",
+    prompt: `请作为资深架构师，设计企业级系统架构：
+
+项目类型：{project_type}（电商/金融/社交/教育）
+用户规模：{scale}（1000/10万/100万/1000万）
+技术栈：{tech_stack}
+核心功能：{features}
+可用性要求：{availability}（99.9%/99.99%）
+
+请提供：
+1. 系统架构图（ASCII）
+2. 技术选型理由
+3. 核心模块设计
+4. 数据库设计建议
+5. 扩展性方案
+6. 容灾备份策略`,
+    tags: ["架构", "企业级", "高并发"],
+    isPremium: true,
+  },
+  {
+    id: "microservice-design",
+    title: "微服务拆分方案",
+    description: "单体应用拆分微服务的完整方案（付费）",
+    category: "架构",
+    prompt: `请设计微服务拆分方案：
+
+当前系统：{current_system}
+技术栈：{tech_stack}
+团队规模：{team_size}
+业务复杂度：{complexity}
+
+请提供：
+1. 服务拆分原则
+2. 服务边界定义
+3. API 设计规范
+4. 服务间通信方案
+5. 数据一致性策略
+6. 部署架构
+7. 监控告警方案`,
+    tags: ["微服务", "架构", "拆分"],
+    isPremium: true,
+  },
+  {
+    id: "security-audit",
+    title: "安全审计报告",
+    description: "生成完整的代码安全审计报告（付费）",
+    category: "代码审查",
+    prompt: `请进行代码安全审计：
+
+代码语言：{language}
+代码类型：{code_type}（API/前端/后端/移动端）
+重点关注：{focus_areas}（认证/授权/数据加密/注入攻击）
+
+审计维度：
+1. OWASP Top 10 漏洞检查
+2. 身份验证与授权
+3. 敏感数据处理
+4. 加密与密钥管理
+5. 第三方依赖安全
+6. 日志与监控
+
+请生成详细的安全审计报告和修复建议。`,
+    tags: ["安全", "审计", "OWASP"],
+    isPremium: true,
+  },
+  {
+    id: "performance-optimization",
+    title: "性能优化方案",
+    description: "完整的系统性能优化方案（付费）",
+    category: "效率工具",
+    prompt: `请制定性能优化方案：
+
+当前问题：{problems}（慢响应/高延迟/卡顿）
+系统类型：{system_type}
+用户量：{users}
+技术栈：{tech_stack}
+
+请提供：
+1. 性能瓶颈分析
+2. 前端优化建议
+3. 后端优化建议
+4. 数据库优化
+5. 缓存策略
+6. CDN 配置
+7. 监控指标
+8. 预期提升效果`,
+    tags: ["性能", "优化", "CDN"],
+    isPremium: true,
+  },
+  {
+    id: "ci-cd-pipeline",
+    title: "企业级 CI/CD 流水线",
+    description: "完整的 DevOps 流水线配置（付费）",
+    category: "DevOps",
+    prompt: `请设计企业级 CI/CD 流水线：
+
+代码仓库：{repo}（GitHub/GitLab）
+技术栈：{tech_stack}
+部署目标：{deploy_to}（AWS/GCP/K8s）
+团队规模：{team_size}
+
+请提供：
+1. 流水线阶段设计
+2. 自动化测试策略
+3. 代码质量检查
+4. 安全扫描集成
+5. 部署策略（蓝绿/金丝雀）
+6. 回滚机制
+7. 环境管理（dev/staging/prod）
+8. GitOps 配置`,
+    tags: ["DevOps", "CI/CD", "自动化"],
+    isPremium: true,
+  },
+  {
+    id: "database-design",
+    title: "数据库设计完整方案",
+    description: "从需求到实现的完整数据库设计（付费）",
+    category: "数据库",
+    prompt: `请设计完整数据库方案：
+
+业务需求：{requirements}
+数据量预估：{data_scale}
+读写比例：{read_write_ratio}
+一致性要求：{consistency}
+
+请提供：
+1. ER 图设计
+2. 表结构定义
+3. 索引策略
+4. 分库分表方案
+5. 数据迁移策略
+6. 备份恢复方案
+7. 性能优化建议`,
+    tags: ["数据库", "设计", "ER图"],
+    isPremium: true,
+  },
 ];
