@@ -179,6 +179,12 @@ export default function Home() {
             {/* 历史按钮 */}
             <div className="flex items-center gap-2">
               <Link
+                href="/login"
+                className="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                登录
+              </Link>
+              <Link
                 href="/about"
                 className="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
               >
