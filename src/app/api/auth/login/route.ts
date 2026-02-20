@@ -1,13 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@supabase/supabase-js'
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
 
 export async function POST(request: NextRequest) {
+  // 检查环境变量
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !supabaseKey) {
+    return NextResponse.json(
+      { error: '服务器暂未配置登录功能，请稍后再试' },
+      { status: 503 }
+    )
+  }
+
   try {
+    const { createClient } = require('@supabase/supabase-js')
+    const supabase = createClient(supabaseUrl, supabaseKey)
+
     const { email, password } = await request.json()
 
     if (!email || !password) {
@@ -32,7 +40,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       user: data.user,
-      session: data.session,
     })
   } catch (error: any) {
     return NextResponse.json(
