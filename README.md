@@ -41,8 +41,8 @@ Kapibala 的使命：
 
 ## 🚀 快速开始
 
-### 在线访问（即将上线）
-https://devprompt.vercel.app
+### 在线访问
+https://kapibala-kappa.vercel.app
 
 ### 本地运行
 
