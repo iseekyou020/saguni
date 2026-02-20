@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Kapibala - 卡皮巴拉的 AI Prompt 模板库",
-  description: "🦫 让 AI 帮你写更好的代码。45+ 免费模板，代码解释、Bug修复、测试生成全覆盖，复制即用！",
+  description: "🦫 让 AI 帮你写更好的代码。46+ 免费模板，代码解释、Bug修复、测试生成全覆盖，复制即用！",
   keywords: ["AI", "Prompt", "ChatGPT", "Claude", "编程", "开发者工具", "效率"],
   authors: [{ name: "Kapibala" }],
   openGraph: {
