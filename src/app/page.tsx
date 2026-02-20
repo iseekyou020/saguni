@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { templates, PromptTemplate } from "@/data/templates";
 
@@ -176,19 +177,33 @@ export default function Home() {
             </div>
             
             {/* 历史按钮 */}
-            <button
-              onClick={() => setShowHistoryPanel(!showHistoryPanel)}
-              className={`p-2 rounded-lg transition-colors ${
-                showHistoryPanel
-                  ? "bg-orange-100 dark:bg-orange-900 text-orange-600"
-                  : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
-              }`}
-              title="浏览历史"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </button>
+            <div className="flex items-center gap-2">
+              <Link
+                href="/about"
+                className="px-3 py-2 text-sm text-gray-600 dark:text-gray-400 hover:text-orange-600 dark:hover:text-orange-400 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700"
+              >
+                关于
+              </Link>
+              <Link
+                href="/contribute"
+                className="px-3 py-2 text-sm bg-gradient-to-r from-orange-400 to-amber-500 text-white rounded-lg hover:opacity-90"
+              >
+                贡献模板
+              </Link>
+              <button
+                onClick={() => setShowHistoryPanel(!showHistoryPanel)}
+                className={`p-2 rounded-lg transition-colors ${
+                  showHistoryPanel
+                    ? "bg-orange-100 dark:bg-orange-900 text-orange-600"
+                    : "hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400"
+                }`}
+                title="浏览历史"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </header>
